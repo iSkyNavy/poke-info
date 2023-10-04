@@ -1,10 +1,26 @@
 <script setup>
-import { RouterLink } from 'vue-router';
 import { useGetData } from '../composables/getData';
 import CardComponent from '../components/CardComponent/index.vue';
+import heartWhiteURL from "@/assets/Icons/heart-white.svg";
+import heartURL from "@/assets/Icons/heart.svg";
+import { ref } from 'vue';
+import { useFavoritesStore } from '../store/favorites';
+import { storeToRefs } from 'pinia';
 
 const { getData, data: pokemons } = useGetData();
 getData("https://pokeapi.co/api/v2/pokemon", true);
+
+const useFavorites = useFavoritesStore();
+storeToRefs(useFavorites);
+const { addFavorites } = useFavorites
+
+const heart = ref(heartWhiteURL);
+
+const handleHeart = (data) => {
+    heart.value = heartURL;
+    addFavorites(data)
+}
+
 </script>
 
 <template>
@@ -23,8 +39,29 @@ getData("https://pokeapi.co/api/v2/pokemon", true);
                 :types="pokemon.detail.types"
                 class="col-md-2"
             >
+                <template #favorite-img>
+                    <figure class="figure-img" @click="handleHeart(pokemon)">
+                        <img :src="heart" alt="favorite-img"/>
+                    </figure>
+                </template>
             </CardComponent>
         </div>
     </div>
-
 </template>
+
+<style scoped>
+    .figure-img{
+        width: 30px;
+        height: 30px;
+        margin: 0;
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        cursor: pointer;
+    }
+
+    .figure-img > img {
+        width: 100%;
+        height: 100%;
+    }
+</style>

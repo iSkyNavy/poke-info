@@ -33,6 +33,7 @@ const typesDictionary = {
                 class="d-flex gap-1"
             >
                 <span v-for="(type, i) in types" :key="i" :class="`badge text-bg-${typesDictionary[type.type.name] ?? 'secondary'}`">{{ type.type.name }}</span>
+                <slot name="favorite-img"></slot>
             </div>
         </div>
     </div>
