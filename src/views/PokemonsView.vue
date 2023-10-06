@@ -3,7 +3,6 @@ import { useGetData } from '../composables/getData';
 import CardComponent from '../components/CardComponent/index.vue';
 import heartWhiteURL from "@/assets/Icons/heart-white.svg";
 import heartURL from "@/assets/Icons/heart.svg";
-import { ref } from 'vue';
 import { useFavoritesStore } from '../store/favorites';
 import { storeToRefs } from 'pinia';
 
@@ -12,12 +11,10 @@ getData("https://pokeapi.co/api/v2/pokemon", true);
 
 const useFavorites = useFavoritesStore();
 storeToRefs(useFavorites);
-const { addFavorites } = useFavorites
-
-const heart = ref(heartWhiteURL);
+const { addFavorites, validateExistFavorite, removeFavorite } = useFavorites
 
 const handleHeart = (data) => {
-    heart.value = heartURL;
+    if (validateExistFavorite(data.detail.id)) return removeFavorite(data.detail.id);
     addFavorites(data)
 }
 
@@ -41,7 +38,7 @@ const handleHeart = (data) => {
             >
                 <template #favorite-img>
                     <figure class="figure-img" @click="handleHeart(pokemon)">
-                        <img :src="heart" alt="favorite-img"/>
+                        <img :src="`${validateExistFavorite(pokemon.detail.id) ? heartURL : heartWhiteURL}`" alt="favorite-img"/>
                     </figure>
                 </template>
             </CardComponent>
